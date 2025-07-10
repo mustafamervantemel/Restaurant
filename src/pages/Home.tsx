@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Star, Clock, MapPin, ChefHat } from 'lucide-react';
+import { Star, Clock, MapPin, ChefHat, Settings } from 'lucide-react';
 import CallToAction from '../components/CallToAction';
 
 const Home = () => {
@@ -128,6 +128,37 @@ const Home = () => {
                 alt="Restoran İç Mekan"
                 className="w-full h-96 object-cover"
               />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Admin Access Section - Mobile Friendly */}
+      <section className="py-16 bg-gradient-to-br from-amber-50 to-red-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-md mx-auto text-center">
+            <div className="bg-white rounded-2xl shadow-lg p-8 border border-amber-100">
+              <div className="flex justify-center mb-6">
+                <div className="bg-amber-100 p-4 rounded-full">
+                  <Settings className="h-8 w-8 text-amber-600" />
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold text-gray-800 mb-4">
+                Restoran Yönetimi
+              </h3>
+              <p className="text-gray-600 mb-6 text-sm">
+                Menü güncellemeleri, fiyat değişiklikleri ve yeni ürün eklemeleri için
+              </p>
+              <Link
+                to="/admin/login"
+                className="w-full bg-amber-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-amber-700 transition-colors duration-200 flex items-center justify-center space-x-2"
+              >
+                <Settings className="h-5 w-5" />
+                <span>Yönetim Paneline Giriş</span>
+              </Link>
+              <p className="text-xs text-gray-500 mt-4">
+                Sadece restoran yöneticileri için
+              </p>
             </div>
           </div>
         </div>

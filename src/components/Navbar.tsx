@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone, ChefHat } from 'lucide-react';
+import { Menu, X, Phone, ChefHat, Settings } from 'lucide-react';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,13 +42,22 @@ const Navbar = () => {
                 {item.name}
               </Link>
             ))}
-            <a
-              href="tel:+903124567890"
-              className="flex items-center space-x-2 bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-700 transition-colors duration-200"
-            >
-              <Phone className="h-4 w-4" />
-              <span>Hemen Ara</span>
-            </a>
+            <div className="flex items-center space-x-3">
+              <Link
+                to="/admin/login"
+                className="flex items-center space-x-2 bg-gray-100 text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-200 transition-colors duration-200 text-sm"
+              >
+                <Settings className="h-4 w-4" />
+                <span>Yönetim</span>
+              </Link>
+              <a
+                href="tel:+903124567890"
+                className="flex items-center space-x-2 bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-700 transition-colors duration-200"
+              >
+                <Phone className="h-4 w-4" />
+                <span>Hemen Ara</span>
+              </a>
+            </div>
           </div>
 
           {/* Mobile menu button */}
@@ -80,13 +89,23 @@ const Navbar = () => {
                   {item.name}
                 </Link>
               ))}
-              <a
-                href="tel:+903124567890"
-                className="flex items-center space-x-2 bg-amber-600 text-white px-3 py-2 rounded-md hover:bg-amber-700 transition-colors duration-200 mx-3 mt-4"
-              >
-                <Phone className="h-4 w-4" />
-                <span>Hemen Ara</span>
-              </a>
+              <div className="mx-3 mt-4 space-y-2">
+                <Link
+                  to="/admin/login"
+                  className="flex items-center space-x-2 bg-gray-100 text-gray-700 px-3 py-2 rounded-md hover:bg-gray-200 transition-colors duration-200"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <Settings className="h-4 w-4" />
+                  <span>Yönetim Paneli</span>
+                </Link>
+                <a
+                  href="tel:+903124567890"
+                  className="flex items-center space-x-2 bg-amber-600 text-white px-3 py-2 rounded-md hover:bg-amber-700 transition-colors duration-200"
+                >
+                  <Phone className="h-4 w-4" />
+                  <span>Hemen Ara</span>
+                </a>
+              </div>
             </div>
           </div>
         )}
