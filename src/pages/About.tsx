@@ -20,27 +20,22 @@ const About = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-4xl font-bold text-gray-800 mb-6">Misyonumuz</h2>
+              <h2 className="text-4xl font-bold text-gray-800 mb-6">Bella Vista'nın Hikayesi</h2>
               <p className="text-gray-600 mb-6 text-lg">
-                Bella Vista'da, harika yemeğin insanları bir araya getirme, 
-                kalıcı anılar yaratma ve hayatın en değerli anlarını kutlama gücüne 
-                sahip olduğuna inanıyoruz. Misyonumuz otantik lezzetleri sıcak misafirperverlik 
-                ile birleştiren olağanüstü bir yemek deneyimi sunmaktır.
+                Bella Vista'nın hikayesi, bir ailenin mutfak tutkusu ve misafirperverlik 
+                geleneğiyle başladı. Ankara'nın kalbinde açılan bu mekan, zamanla 
+                şehrin en sevilen buluşma noktalarından biri haline geldi.
+              </p>
+              <p className="text-gray-600 mb-6 text-lg">
+                Kuruluşumuzdan bu yana, Türk mutfağının zengin mirasını modern 
+                tekniklerle harmanlayarak, her tabakta bir hikaye anlatmaya odaklandık. 
+                Dedelerimizden öğrendiğimiz tarifler, bugünün anlayışıyla yeniden yorumlanıyor.
               </p>
               <p className="text-gray-600 mb-8 text-lg">
-                Yalnızca en kaliteli malzemeleri kullanmaya, yerel çiftciçileri desteklemeye 
-                ve yeniliği benimserken geleneksel tarifleri onurlandıran yemekler yaratmaya kararlıyız.
+                Her gün kapımızdan geçen misafirlerimiz, sadece yemek yemek için değil, 
+                dostluk kurmak ve güzel anılar biriktirmek için geliyor. Bu güven, 
+                bize verilen en değerli hediye.
               </p>
-              <div className="grid grid-cols-2 gap-6">
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-amber-600 mb-2">15+</div>
-                  <div className="text-gray-600">Yıl Deneyim</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-amber-600 mb-2">50K+</div>
-                  <div className="text-gray-600">Mutlu Müşteri</div>
-                </div>
-              </div>
             </div>
             <div className="rounded-lg overflow-hidden shadow-lg">
               <img

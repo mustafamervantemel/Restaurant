@@ -1,19 +1,21 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, User } from 'firebase/auth';
+import { getStorage } from 'firebase/storage';
 
-// Firebase configuration (replace with your actual config)
+// Firebase configuration
 const firebaseConfig = {
-  apiKey: "your-api-key",
-  authDomain: "your-project.firebaseapp.com",
-  projectId: "your-project-id",
-  storageBucket: "your-project.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "your-app-id"
+  apiKey: "AIzaSyCXi4WHO7qC9G1qHkZoXUobouQ4RmKbh9A",
+  authDomain: "restaurant-c6f33.firebaseapp.com",
+  projectId: "restaurant-c6f33",
+  storageBucket: "restaurant-c6f33.appspot.com",
+  messagingSenderId: "874009144912",
+  appId: "1:874009144912:web:abcdef123456789"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+export const storage = getStorage(app);
 
 interface AuthContextType {
   currentUser: User | null;

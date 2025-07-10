@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useMenu } from '../contexts/MenuContext';
-import { Plus, Edit, Trash2, Save, X, LogOut, ChefHat } from 'lucide-react';
+import { Plus, Edit, Trash2, Save, X, LogOut, ChefHat, Upload, Image } from 'lucide-react';
+import { storage } from '../contexts/AuthContext';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { v4 as uuidv4 } from 'uuid';
 
 const AdminPanel = () => {
   const { logout } = useAuth();
@@ -19,38 +22,94 @@ const AdminPanel = () => {
     preparationTime: ''
   });
 
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string>('');
+
   const [newCategory, setNewCategory] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Check file size (5MB limit)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Dosya boyutu 5MB\'dan küçük olmalıdır.');
+        return;
+      }
+
+      // Check file type
+      if (!file.type.startsWith('image/')) {
+        alert('Sadece resim dosyaları yükleyebilirsiniz.');
+        return;
+      }
+
+      setUploadedFile(file);
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+      
+      // Clear URL input
+      setFormData({...formData, image: ''});
+    }
+  };
+
+  const uploadImage = async (file: File): Promise<string> => {
+    const imageRef = ref(storage, `menu-images/${uuidv4()}_${file.name}`);
+    const snapshot = await uploadBytes(imageRef, file);
+    return await getDownloadURL(snapshot.ref);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const itemData = {
-      name: formData.name,
-      description: formData.description,
-      price: parseFloat(formData.price),
-      category: formData.category,
-      image: formData.image,
-      available: formData.available,
-      preparationTime: formData.preparationTime
-    };
+    try {
+      setUploading(true);
+      let imageUrl = formData.image;
 
-    if (editingId) {
-      updateMenuItem(editingId, itemData);
-      setEditingId(null);
-    } else {
-      addMenuItem(itemData);
+      // Upload image if file is selected
+      if (uploadedFile) {
+        imageUrl = await uploadImage(uploadedFile);
+      }
+
+      const itemData = {
+        name: formData.name,
+        description: formData.description,
+        price: parseFloat(formData.price),
+        category: formData.category,
+        image: imageUrl,
+        available: formData.available,
+        preparationTime: formData.preparationTime
+      };
+
+      if (editingId) {
+        updateMenuItem(editingId, itemData);
+        setEditingId(null);
+      } else {
+        addMenuItem(itemData);
+      }
+
+      setFormData({
+        name: '',
+        description: '',
+        price: '',
+        category: '',
+        image: '',
+        available: true,
+        preparationTime: ''
+      });
+      setUploadedFile(null);
+      setImagePreview('');
+      setShowAddForm(false);
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Resim yüklenirken hata oluştu.');
+    } finally {
+      setUploading(false);
     }
-
-    setFormData({
-      name: '',
-      description: '',
-      price: '',
-      category: '',
-      image: '',
-      available: true,
-      preparationTime: ''
-    });
-    setShowAddForm(false);
   };
 
   const handleEdit = (item: any) => {
@@ -77,6 +136,8 @@ const AdminPanel = () => {
       available: true,
       preparationTime: ''
     });
+    setUploadedFile(null);
+    setImagePreview('');
     setShowAddForm(false);
     setEditingId(null);
   };
@@ -228,16 +289,63 @@ const AdminPanel = () => {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Resim URL'si
+                      Resim
                     </label>
-                    <input
-                      type="url"
-                      value={formData.image}
-                      onChange={(e) => setFormData({...formData, image: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
-                      placeholder="https://ornek.com/resim.jpg"
-                      required
-                    />
+                    <div className="space-y-4">
+                      {/* File Upload */}
+                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-amber-500 transition-colors">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileSelect}
+                          className="hidden"
+                          id="image-upload"
+                        />
+                        <label htmlFor="image-upload" className="cursor-pointer">
+                          <div className="flex flex-col items-center space-y-2">
+                            <Upload className="h-8 w-8 text-gray-400" />
+                            <span className="text-sm text-gray-600">Resim seçmek için tıklayın</span>
+                            <span className="text-xs text-gray-500">PNG, JPG, JPEG (Max 5MB)</span>
+                          </div>
+                        </label>
+                      </div>
+
+                      {/* Image Preview */}
+                      {(imagePreview || formData.image) && (
+                        <div className="relative">
+                          <img
+                            src={imagePreview || formData.image}
+                            alt="Önizleme"
+                            className="w-full h-48 object-cover rounded-lg border"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setImagePreview('');
+                              setFormData({...formData, image: ''});
+                              setUploadedFile(null);
+                            }}
+                            className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        </div>
+                      )}
+
+                      {/* URL Input as Alternative */}
+                      <div className="text-center text-sm text-gray-500">veya</div>
+                      <input
+                        type="url"
+                        value={formData.image}
+                        onChange={(e) => {
+                          setFormData({...formData, image: e.target.value});
+                          setImagePreview('');
+                          setUploadedFile(null);
+                        }}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                        placeholder="https://ornek.com/resim.jpg"
+                      />
+                    </div>
                   </div>
 
                   <div>
@@ -277,10 +385,11 @@ const AdminPanel = () => {
                     </button>
                     <button
                       type="submit"
-                      className="flex items-center space-x-2 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors duration-200"
+                      disabled={uploading}
+                      className="flex items-center space-x-2 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <Save className="h-4 w-4" />
-                      <span>{editingId ? 'Güncelle' : 'Ekle'} Öğe</span>
+                      <span>{uploading ? 'Yükleniyor...' : (editingId ? 'Güncelle' : 'Ekle')} Öğe</span>
                     </button>
                   </div>
                 </form>

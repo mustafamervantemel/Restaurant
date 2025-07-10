@@ -104,8 +104,18 @@ const AdminLogin = () => {
 
           <div className="text-center">
             <p className="text-sm text-gray-600">
-              Demo için şunları kullanın: admin@bellavista.com / password123
+              Demo için şunları kullanın
+    
             </p>
+            <p className="text-sm text-gray-600">
+              Mail: admin@bellavista.com
+            
+            </p>
+            <p className="text-sm text-gray-600">
+            
+              Şifre: password123
+            </p>
+
           </div>
         </form>
       </div>
